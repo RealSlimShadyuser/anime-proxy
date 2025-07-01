@@ -23,10 +23,20 @@ app.get("/anime/gogo/search", async (req, res) => {
   }
 });
 
-// 📺 Get episodes for an anime
+const express = require("express");
+const axios = require("axios");
+const path = require("path");
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+const BASE_URL = "https://api.consumet.org/anime/gogoanime";
+
+// Serve homepage
+app.use(express.static(path.join(__dirname, "public")));
+
+// 📺 Get episodes
 app.get("/anime/gogo/episodes/:animeId", async (req, res) => {
   const { animeId } = req.params;
-
   try {
     const response = await axios.get(`${BASE_URL}/info/${animeId}`);
     res.json(response.data);
@@ -35,10 +45,9 @@ app.get("/anime/gogo/episodes/:animeId", async (req, res) => {
   }
 });
 
-// ▶️ Get streaming URL from episode ID
+// ▶️ Get stream URL
 app.get("/anime/gogo/watch/:episodeId", async (req, res) => {
   const { episodeId } = req.params;
-
   try {
     const response = await axios.get(`${BASE_URL}/watch/${episodeId}`);
     res.json(response.data);
@@ -47,13 +56,7 @@ app.get("/anime/gogo/watch/:episodeId", async (req, res) => {
   }
 });
 
-app.get("/", (req, res) => {
-  res.send("Anime Proxy is running!");
-});
-
+// Start server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-});
-app.get("/", (req, res) => {
-  res.send("✅ Anime Proxy is running!");
 });
