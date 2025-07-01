@@ -1,41 +1,17 @@
 const express = require("express");
 const axios = require("axios");
-const cors = require("cors");
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
-
-const BASE_URL = "https://api.consumet.org/anime/gogoanime";
-
-// 🔍 Search anime
-app.get("/anime/gogo/search", async (req, res) => {
-  const { query } = req.query;
-  if (!query) return res.status(400).json({ error: "Missing query parameter" });
-
-  try {
-    const response = await axios.get(`${BASE_URL}/${encodeURIComponent(query)}`);
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to search anime" });
-  }
-});
-
-const express = require("express");
-const axios = require("axios");
 const path = require("path");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Set the base URL for GogoAnime API via Consumet
 const BASE_URL = "https://api.consumet.org/anime/gogoanime";
 
-// Serve homepage
+// Serve static files (like index.html) from the 'public' folder
 app.use(express.static(path.join(__dirname, "public")));
 
-// 📺 Get episodes
+// 📺 Get episodes by anime ID
 app.get("/anime/gogo/episodes/:animeId", async (req, res) => {
   const { animeId } = req.params;
   try {
@@ -46,7 +22,7 @@ app.get("/anime/gogo/episodes/:animeId", async (req, res) => {
   }
 });
 
-// ▶️ Get stream URL
+// ▶️ Get streaming link by episode ID
 app.get("/anime/gogo/watch/:episodeId", async (req, res) => {
   const { episodeId } = req.params;
   try {
@@ -57,10 +33,13 @@ app.get("/anime/gogo/watch/:episodeId", async (req, res) => {
   }
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// 🏠 Redirect homepage to GoGoAnime (OPTIONAL)
+// If you want to show real gogoanime site when visiting root URL
 app.get("/", (req, res) => {
   res.redirect("https://gogoanime.pe/");
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`✅ Server is running on port ${PORT}`);
 });
