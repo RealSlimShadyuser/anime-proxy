@@ -56,3 +56,25 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`✅ Server is running on port ${PORT}`);
 });
+// 🏠 Get recent episodes (for home screen)
+app.get("/anime/gogo/recent-episodes", async (req, res) => {
+  try {
+    const response = await axios.get(`${BASE_URL}`);
+    res.json(response.data);
+  } catch (err) {
+    console.error("❌ Recent Episodes Error:", err.message);
+    res.status(500).json({ error: "Failed to fetch recent episodes" });
+  }
+});
+
+// 📄 Get Anime Info (for detail screen)
+app.get("/anime/gogo/info/:animeId", async (req, res) => {
+  const { animeId } = req.params;
+  try {
+    const response = await axios.get(`${BASE_URL}/info/${animeId}`);
+    res.json(response.data);
+  } catch (err) {
+    console.error("❌ Anime Info Error:", err.message);
+    res.status(500).json({ error: "Failed to fetch anime info" });
+  }
+});
